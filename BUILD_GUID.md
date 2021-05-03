@@ -12,4 +12,20 @@ https://chocolatey.org/packages/bazel/1.0.0#dependencies
 since we updated to Bazel 2.0.0, I think the Bazel package depends on neither Python nor MSYS2:
 https://chocolatey.org/packages/bazel/2.0.0#dependencies
 
+## 아래 환경 변수 추가로 설정해 줌
 
+```
+# vulkan 인데 이건 긴가 민가
+C:\VulkanSDK\1.2.170.0\Bin
+# patch 실행파일을 찾을 수 없다고 나옴
+C:\tools\msys64\usr\bin
+````
+
+## 7.3 gcc 가 없다
+
+```
+# https://repo.msys2.org/mingw/x86_64/
+
+https://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-libs-7.2.0-1-any.pkg.tar.xz
+https://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-gcc-7.2.0-1-any.pkg.tar.xz
+```
