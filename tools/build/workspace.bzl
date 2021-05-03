@@ -145,11 +145,11 @@ def gapid_dependencies(android = True, mingw = True, locals = {}):
         github_repository,
         name = "llvm",
         locals = locals,
-        organization = "llvm-mirror",
+        organization = "newpolaris",
         project = "llvm",
-        commit = "e562960fe303c0ffab6f3458fcdb1544b56fd81e",
+        commit = "6d2328b65d17b53756a5ad6f970cc4516d4f0c46",
         build_file = "@gapid//tools/build/third_party:llvm.BUILD",
-        sha256 = "3ef3d905849d547b6481b16d8e7b473a84efafbe90131e7bc90a0c6aae4cd8e6",
+        sha256 = "4adbb43e4d919c93091e17494585811ed5278f6041161d3592cb0414fd673172",
     )
 
     maybe_repository(
@@ -173,12 +173,13 @@ def gapid_dependencies(android = True, mingw = True, locals = {}):
     )
 
     maybe_repository(
-        git_repository,
+        github_repository,
         name = "perfetto",
         locals = locals,
-        remote = "https://android.googlesource.com/platform/external/perfetto",
-        commit = "f447425f9f7f676bf22d3c5e4a78f30d43c92c95",
-        shallow_since = "1582916230 +0000",
+        organization = "newpolaris",
+        project = "perfetto",
+        commit = "f108ded952984ec5e7073562d4d3ae055e9cca4d",
+        sha256 = "cfb9199ce13fa983727cedc6e40ea1e7436e268f860340248367364bf2b9c829"
     )
 
     maybe_repository(
