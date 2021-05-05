@@ -76,6 +76,37 @@ public class Geometries
           .setFormat(Streams.FMT_XYZ_F32))
       .build();
 
+  protected static final Vertex.BufferFormat POS_TEX_XYZ_F32 = Vertex.BufferFormat.newBuilder()
+      .addStreams(Vertex.StreamFormat.newBuilder()
+          .setSemantic(Vertex.Semantic.newBuilder()
+              .setType(Vertex.Semantic.Type.Position)
+              .setIndex(0))
+          .setFormat(Streams.FMT_XYZ_F32))
+      .addStreams(Vertex.StreamFormat.newBuilder()
+          .setSemantic(Vertex.Semantic.newBuilder()
+              .setType(Vertex.Semantic.Type.Texcoord)
+              .setIndex(0))
+          .setFormat(Streams.FMT_XYZ_F32))
+      .build();
+
+  protected static final Vertex.BufferFormat POS_NORM_TEX_XYZ_F32 = Vertex.BufferFormat.newBuilder()
+      .addStreams(Vertex.StreamFormat.newBuilder()
+          .setSemantic(Vertex.Semantic.newBuilder()
+              .setType(Vertex.Semantic.Type.Position)
+              .setIndex(0))
+          .setFormat(Streams.FMT_XYZ_F32))
+      .addStreams(Vertex.StreamFormat.newBuilder()
+          .setSemantic(Vertex.Semantic.newBuilder()
+              .setType(Vertex.Semantic.Type.Normal)
+              .setIndex(0))
+          .setFormat(Streams.FMT_XYZ_F32))
+      .addStreams(Vertex.StreamFormat.newBuilder()
+          .setSemantic(Vertex.Semantic.newBuilder()
+              .setType(Vertex.Semantic.Type.Texcoord)
+              .setIndex(0))
+          .setFormat(Streams.FMT_XYZ_F32))
+      .build();
+
   public Geometries(
       Shell shell, Analytics analytics, Client client, Devices devices, CommandStream commands) {
     super(LOG, shell, analytics, client, Listener.class, devices);
@@ -113,9 +144,9 @@ public class Geometries
   protected ListenableFuture<Data> doLoad(Source s, Path.Device device) {
     return MoreFutures.transformAsync(fetchMeshMetadata(device, s.command, s.semantics), semantics -> {
       ListenableFuture<Model> originalFuture = fetchModel(device, meshAfter(
-          s.command, semantics.getOptions().build(), POS_NORM_XYZ_F32));
+          s.command, semantics.getOptions().build(), POS_NORM_TEX_XYZ_F32));
       ListenableFuture<Model> facetedFuture = fetchModel(device, meshAfter(
-          s.command, semantics.getOptions().setFaceted(true).build(), POS_NORM_XYZ_F32));
+          s.command, semantics.getOptions().setFaceted(true).build(), POS_NORM_TEX_XYZ_F32));
       return MoreFutures.combine(Arrays.asList(originalFuture, facetedFuture), models -> {
         MoreFutures.Result<Model> original = models.get(0);
         MoreFutures.Result<Model> faceted = models.get(1);
@@ -183,6 +214,7 @@ public class Geometries
     Vertex.Buffer vb = mesh.getVertexBuffer();
     float[] positions = null;
     float[] normals = null;
+    float[] texcoords = null;
 
     for (Vertex.Stream stream : vb.getStreamsList()) {
       switch (stream.getSemantic().getType()) {
@@ -191,6 +223,9 @@ public class Geometries
           break;
         case Normal:
           normals = byteStringToFloatArray(stream.getData());
+          break;
+        case Texcoord:
+          texcoords = byteStringToFloatArray(stream.getData());
           break;
         default:
           // Ignore.
@@ -204,7 +239,7 @@ public class Geometries
     }
 
     int[] indices = mesh.getIndexBuffer().getIndicesList().stream().mapToInt(x -> x).toArray();
-    Model model = new Model(primitive, mesh.getStats(), positions, normals, indices);
+    Model model = new Model(primitive, mesh.getStats(), positions, normals, texcoords, indices);
     return Futures.immediateFuture(model);
   }
 

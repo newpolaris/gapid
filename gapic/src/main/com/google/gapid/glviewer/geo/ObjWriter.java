@@ -17,6 +17,7 @@ package com.google.gapid.glviewer.geo;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 
 /**
  * Writes {@link Model models} to OBJ files.
@@ -29,6 +30,12 @@ public class ObjWriter {
     // TODO: could possibly make the OBJ smaller by deduping vertices and normals.
     writePositions(out, model.getPositions());
     writeNormals(out, model.getNormals());
+    float[] coords = model.getTexcoords();
+    if (coords == null) {
+      coords = new float[model.getPositions().length];
+      Arrays.fill(coords, 0.f);
+    }
+    writeTexcoords(out, coords);
     out.write("s 1\n");
     switch (model.getPrimitive()) {
       case Points: writePoints(out, model.getIndices()); break;
@@ -51,6 +58,12 @@ public class ObjWriter {
   private static void writeNormals(Writer out, float[] normals) throws IOException {
     for (int i = 2; i < normals.length; i += 3) {
       out.write("vn " + normals[i - 2] + " " + normals[i - 1] + " " + normals[i - 0] + "\n");
+    }
+  }
+
+  private static void writeTexcoords(Writer out, float[] coords) throws IOException {
+    for (int i = 2; i < coords.length; i += 3) {
+      out.write("vt " + coords[i - 2] + " " + coords[i - 1] + " " + coords[i - 0] + "\n");
     }
   }
 
@@ -106,7 +119,8 @@ public class ObjWriter {
   }
 
   private static void writeTriangle(Writer out, int a, int b, int c) throws IOException {
-    out.write("f " + (a + 1) + "//" + (a + 1) + " " + (b + 1) + "//" + (b + 1) +
-        " " + (c + 1) + "//" + (c + 1) + "\n");
+    out.write("f " + (a + 1) + "/" + (a + 1) + "/" + (a + 1)
+             + " " + (b + 1) + "/" + (b + 1) + "/" + (b + 1)
+             + " " + (c + 1) + "/" + (c + 1) + "/" + (c + 1) + "\n");
   }
 }

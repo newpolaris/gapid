@@ -25,15 +25,17 @@ public class Model {
   private final API.Mesh.Stats stats;
   private final float[] positions; // x, y, z
   private final float[] normals; // x, y, z
+  private final float[] texcoords; // x, y, z
   private final int[] indices;
   private final BoundingBox bounds = new BoundingBox();
 
   public Model(API.DrawPrimitive primitive, API.Mesh.Stats stats, float[] positions,
-      float[] normals, int[] indices) {
+      float[] normals, float[] texcoords, int[] indices) {
     this.primitive = primitive;
     this.stats = stats;
     this.positions = positions;
     this.normals = normals;
+    this.texcoords = texcoords;
     this.indices = indices;
 
     if (indices == null) {
@@ -60,6 +62,10 @@ public class Model {
 
   public float[] getNormals() {
     return normals;
+  }
+
+  public float[] getTexcoords() {
+    return texcoords;
   }
 
   public int[] getIndices() {
